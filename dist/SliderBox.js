@@ -51,6 +51,26 @@ export class SliderBox extends Component {
     //let a = [...Array(this.props.images.length).keys()].map((i) => false);
   }
 
+  /**
+   * When the image list is changed such as deleted
+   * currentImage should be reset to user's view image index
+   * @param prevProps
+   */
+  componentDidUpdate(prevProps) {
+    if (Object.entries(prevProps).toString() === Object.entries(this.props).toString()) {
+      return;
+    }
+    const {currentImageEmitter} = this.props;
+    let viewItemIndex= this._ref._activeItem
+    if (prevProps.images.length !== this.props.images.length) {
+      this.setState({currentImage: viewItemIndex}, () => {
+        if (currentImageEmitter) {
+          currentImageEmitter(this.state.currentImage);
+        }
+      });
+    }
+  }
+
   onCurrentImagePressedHandler() {
     if (this.props.onCurrentImagePressed) {
       this.props.onCurrentImagePressed(this.state.currentImage);
